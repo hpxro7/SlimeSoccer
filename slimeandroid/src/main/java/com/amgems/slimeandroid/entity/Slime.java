@@ -48,10 +48,10 @@ public class Slime {
     }
 
     public void checkBounds() {
-        if (x >= TARGET_WIDTH - size / 2) {
+        if (x > TARGET_WIDTH - size / 2) {
             x = TARGET_WIDTH - size / 2;
             dx = 0;
-        } else if (x <= size / 2) {
+        } else if (x < size / 2) {
             x = size / 2;
             dx = 0;
         }

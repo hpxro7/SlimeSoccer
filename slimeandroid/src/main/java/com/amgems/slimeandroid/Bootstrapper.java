@@ -7,6 +7,7 @@ import android.os.Bundle;
 import android.view.*;
 import android.os.Build;
 import com.amgems.slimeandroid.engine.GameEngine;
+import com.amgems.slimeandroid.engine.GameInputHandler;
 import com.amgems.slimeandroid.engine.GameSurfaceView;
 import com.amgems.slimeandroid.engine.Renderer;
 
@@ -24,6 +25,8 @@ public class Bootstrapper extends Activity {
                              WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
         mGameSurfaceView = new GameSurfaceView(this);
+        GameInputHandler gameInputHandler = GameInputHandler.getInstance(mGameSurfaceView);
+        mGameSurfaceView.registerInputHandler(gameInputHandler);
         mEngine = new GameEngine(mGameSurfaceView);
         setContentView(mGameSurfaceView);
     }

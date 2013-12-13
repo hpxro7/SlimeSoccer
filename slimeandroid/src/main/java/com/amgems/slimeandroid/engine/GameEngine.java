@@ -1,5 +1,6 @@
 package com.amgems.slimeandroid.engine;
 
+import android.graphics.Paint;
 import android.util.Log;
 
 /**
@@ -26,6 +27,7 @@ public class GameEngine implements Runnable {
                 if (mLastCallTime == INIT_TIME) {
                     mLastCallTime = System.currentTimeMillis();
                 }
+
                 long currentTime = System.currentTimeMillis();
                 long deltaTime = currentTime - mLastCallTime;
                 mLastCallTime = currentTime;
