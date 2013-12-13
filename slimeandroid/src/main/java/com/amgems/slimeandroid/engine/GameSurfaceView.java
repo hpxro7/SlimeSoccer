@@ -15,6 +15,9 @@ import com.amgems.slimeandroid.entity.Slime;
  * Created by shermpay on 12/12/13.
  */
 public class GameSurfaceView extends SurfaceView implements Renderer {
+    private static final int TARGET_WIDTH = 1280;
+    private static final int TARGET_HEIGHT = 720;
+
     private SurfaceHolder mHolder;
     Bitmap bg;
     Slime player1;
@@ -32,6 +35,7 @@ public class GameSurfaceView extends SurfaceView implements Renderer {
         p.setColor(Color.GRAY);
         canvas.drawRect((float) 0.9 * getHeight(), 0, getWidth(), getHeight(), p);
         player1 = new Slime((float) 0.5 * getWidth(), (float) 0.9 * getHeight() + 50 , Color.GREEN);
+        mHolder.setFixedSize(TARGET_WIDTH, TARGET_HEIGHT);
     }
 
     @Override
