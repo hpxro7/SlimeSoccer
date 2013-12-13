@@ -20,32 +20,32 @@ public class GameSurfaceView extends SurfaceView implements Renderer {
     private static final int SLIME_SIZE = 150;
 
     private SurfaceHolder mHolder;
-    Bitmap bg;
-    Slime player1;
+    Bitmap mBackgroundBitmap; // Badass grandma?
+    Slime mPlayer;
 
 
     public GameSurfaceView(Context context) {
         super(context);
         mHolder = getHolder();
         mHolder.setFixedSize(TARGET_WIDTH, TARGET_HEIGHT);
-        bg = Bitmap.createBitmap(TARGET_WIDTH, TARGET_HEIGHT, Bitmap.Config.ARGB_8888);
-        Canvas canvas = new Canvas(bg);
-        Paint p = new Paint();
+        mBackgroundBitmap = Bitmap.createBitmap(TARGET_WIDTH, TARGET_HEIGHT, Bitmap.Config.ARGB_8888);
+        Canvas canvas = new Canvas(mBackgroundBitmap);
+        Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
         p.setColor(Color.BLUE);
-        canvas.drawRect(0, 0, TARGET_WIDTH, (float) 0.9 * TARGET_HEIGHT, p);
+        canvas.drawRect(0f, 0f, TARGET_WIDTH, 0.9f * TARGET_HEIGHT, p);
         Log.d("Stuff", "width: " + TARGET_WIDTH + " height: " + TARGET_HEIGHT);
         p.setColor(Color.GRAY);
-        canvas.drawRect(0, (float) 0.9 * TARGET_HEIGHT, TARGET_WIDTH, TARGET_HEIGHT, p);
-        player1 = new Slime((float) 0.5 * TARGET_WIDTH, (float) 0.9 * TARGET_HEIGHT - 75 , SLIME_SIZE, Color.GREEN);
+        canvas.drawRect(0f, 0.9f * TARGET_HEIGHT, TARGET_WIDTH, TARGET_HEIGHT, p);
+        mPlayer = new Slime(0.5f * TARGET_WIDTH, 0.9f * TARGET_HEIGHT - 75 , SLIME_SIZE, Color.GREEN);
     }
 
     @Override
     public void draw(long deltaTime) {
         Canvas surfaceCanvas = mHolder.lockCanvas();
-        surfaceCanvas.drawBitmap(bg, 0, 0, null);
+        surfaceCanvas.drawBitmap(mBackgroundBitmap, 0, 0, null);
 
         // Draw stuff
-        player1.drawBitMap(surfaceCanvas);
+        mPlayer.drawBitMap(surfaceCanvas);
         mHolder.unlockCanvasAndPost(surfaceCanvas);
     }
 
