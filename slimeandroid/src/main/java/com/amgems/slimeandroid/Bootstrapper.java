@@ -10,6 +10,8 @@ import com.amgems.slimeandroid.engine.GameEngine;
 import com.amgems.slimeandroid.engine.GameSurfaceView;
 import com.amgems.slimeandroid.engine.Renderer;
 
+import java.util.Queue;
+
 public class Bootstrapper extends Activity {
 
     private GameEngine mEngine;
