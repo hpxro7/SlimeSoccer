@@ -7,7 +7,7 @@ import android.graphics.Canvas;
  */
 public interface Renderer {
 
-    public void draw(long deltaTime);
+    public void draw(float deltaTime);
 
     public boolean isSurfaceReady();
 }
