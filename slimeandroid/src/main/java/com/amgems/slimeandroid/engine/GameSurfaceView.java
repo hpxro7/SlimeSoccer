@@ -44,8 +44,8 @@ public class GameSurfaceView extends SurfaceView implements Renderer {
         canvas.drawRect(0f, 0f, TARGET_WIDTH, 0.9f * TARGET_HEIGHT, p);
         p.setColor(Color.GRAY);
         canvas.drawRect(0f, 0.9f * TARGET_HEIGHT, TARGET_WIDTH, TARGET_HEIGHT, p);
-        mPlayer = new Slime(0.5f * TARGET_WIDTH, 0.9f * TARGET_HEIGHT - 75 , SLIME_SIZE, GRAVITY, Color.RED);
-        mBall = new Ball(0.1f * TARGET_WIDTH, 0.3f * TARGET_HEIGHT, BALL_SIZE, GRAVITY, Color.YELLOW);
+        mPlayer = new Slime(0.5f * TARGET_WIDTH, 0.9f * TARGET_HEIGHT - BALL_SIZE , SLIME_SIZE, GRAVITY, Color.RED);
+        mBall = new Ball(0.45f * TARGET_WIDTH, 0.3f * TARGET_HEIGHT, BALL_SIZE, GRAVITY, Color.YELLOW);
     }
 
     public void registerInputHandler(GameInputHandler gameInputHandler) {
@@ -79,7 +79,7 @@ public class GameSurfaceView extends SurfaceView implements Renderer {
                         break;
                     }
                     case STOP: {
-                        mPlayer.dx = 0;
+                        mPlayer.dx = 0.000001f;
                         break;
                     }
                     default:
@@ -97,8 +97,7 @@ public class GameSurfaceView extends SurfaceView implements Renderer {
         consumeQueue();
         mPlayer.checkGround(deltaTime);
         mPlayer.checkBounds();
-        mBall.checkGround(deltaTime);
-        mBall.checkBounds();
+        mBall.update(deltaTime, mPlayer);
 
         // Change positions
 
