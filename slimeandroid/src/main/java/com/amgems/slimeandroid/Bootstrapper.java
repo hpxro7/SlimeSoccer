@@ -8,14 +8,9 @@ import android.view.*;
 import android.os.Build;
 import com.amgems.slimeandroid.engine.GameEngine;
 
-public class Bootstrapper extends Activity implements View.OnTouchListener {
+public class Bootstrapper extends Activity {
 
     private GameEngine mEngine;
-
-    @Override
-    public boolean onTouch(View v, MotionEvent event) {
-        return false;
-    }
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
