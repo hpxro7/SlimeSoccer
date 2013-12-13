@@ -9,6 +9,7 @@
 *.class
 
 # generated files
+build/
 bin/
 gen/
 
@@ -25,6 +26,7 @@ proguard/
 # Intellij project files
 .idea/
 .gradle
+gradle/
 /*/local.properties
 /*/out
 /*/*/build
