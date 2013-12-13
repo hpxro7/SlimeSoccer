@@ -17,6 +17,7 @@ import com.amgems.slimeandroid.entity.Slime;
 public class GameSurfaceView extends SurfaceView implements Renderer {
     private static final int TARGET_WIDTH = 1280;
     private static final int TARGET_HEIGHT = 720;
+    private static final int SLIME_SIZE = 150;
 
     private SurfaceHolder mHolder;
     Bitmap bg;
@@ -26,16 +27,16 @@ public class GameSurfaceView extends SurfaceView implements Renderer {
     public GameSurfaceView(Context context) {
         super(context);
         mHolder = getHolder();
-        bg = Bitmap.createBitmap(1280, 720, Bitmap.Config.ARGB_8888);
+        mHolder.setFixedSize(TARGET_WIDTH, TARGET_HEIGHT);
+        bg = Bitmap.createBitmap(TARGET_WIDTH, TARGET_HEIGHT, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(bg);
         Paint p = new Paint();
         p.setColor(Color.BLUE);
-        canvas.drawRect(0, 0, getWidth(), (float) 0.9 * getHeight(), p);
-        Log.d("Stuff", "width: " + getWidth() + " height: " + getHeight());
+        canvas.drawRect(0, 0, TARGET_WIDTH, (float) 0.9 * TARGET_HEIGHT, p);
+        Log.d("Stuff", "width: " + TARGET_WIDTH + " height: " + TARGET_HEIGHT);
         p.setColor(Color.GRAY);
-        canvas.drawRect((float) 0.9 * getHeight(), 0, getWidth(), getHeight(), p);
-        player1 = new Slime((float) 0.5 * getWidth(), (float) 0.9 * getHeight() + 50 , Color.GREEN);
-        mHolder.setFixedSize(TARGET_WIDTH, TARGET_HEIGHT);
+        canvas.drawRect(0, (float) 0.9 * TARGET_HEIGHT, TARGET_WIDTH, TARGET_HEIGHT, p);
+        player1 = new Slime((float) 0.5 * TARGET_WIDTH, (float) 0.9 * TARGET_HEIGHT - 75 , SLIME_SIZE, Color.GREEN);
     }
 
     @Override
