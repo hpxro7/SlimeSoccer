@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -25,8 +24,7 @@ public class GameSurfaceView extends SurfaceView implements Renderer {
     private SurfaceHolder mHolder;
     private GameInputHandler mGameInputHandler;
     private float mScaleXRatio;
-    private float mScaleYRatio;
-    Bitmap mBackgroundBitmap; // Badass grandma?
+    Bitmap mBackgroundBitmap;
     Slime mPlayer;
     Ball mBall;
 
@@ -60,27 +58,32 @@ public class GameSurfaceView extends SurfaceView implements Renderer {
         super.onMeasure(widthMeasureSpec, heightMeasureSpec);
 
         mScaleXRatio = (float)TARGET_WIDTH / MeasureSpec.getSize(widthMeasureSpec);
-        mScaleYRatio = (float)TARGET_HEIGHT / MeasureSpec.getSize(heightMeasureSpec);
     }
 
     public float getScaledX(float x) {
         return mScaleXRatio * x;
     }
 
-    public float getScaledY(float y) {
-        return mScaleYRatio * y;
-    }
-
-    public void consumeQueue(Canvas surfaceCanvas) {
+    public void consumeQueue() {
         synchronized (mGameInputHandler.eventQueue) {
-            //Log.v(GameSurfaceView.class.getSimpleName(), "Queue size " + mGameInputHandler.eventQueue.size());
             while (!mGameInputHandler.eventQueue.isEmpty()) {
-                GameInputHandler.TouchEvent event = mGameInputHandler.eventQueue.remove();
-                Log.v(GameSurfaceView.class.getSimpleName(), "I'm being processsssssssssssssssed"); // TODO: REMOVE
-                if (getScaledX(event.x) >= mPlayer.x) {
-                    mPlayer.dx = 800f;
-                } else {
-                    mPlayer.dx = -800f;
+                InputEvent event = mGameInputHandler.eventQueue.remove();
+
+                switch (event.getType()) {
+                    case MOVE: {
+                        if (getScaledX(event.x) >= mPlayer.x) {
+                            mPlayer.dx = Slime.HORIZONTAL_VELOCITY;
+                        } else {
+                            mPlayer.dx = -Slime.HORIZONTAL_VELOCITY;
+                        }
+                        break;
+                    }
+                    case STOP: {
+                        mPlayer.dx = 0;
+                        break;
+                    }
+                    default:
+                        break;
                 }
             }
         }
@@ -91,7 +94,7 @@ public class GameSurfaceView extends SurfaceView implements Renderer {
         Canvas surfaceCanvas = mHolder.lockCanvas();
         // Get Input/Change Velocity
         // E.g mPlayer.dx = -200f;
-        consumeQueue(surfaceCanvas);
+        consumeQueue();
         mPlayer.checkGround(deltaTime);
         mPlayer.checkBounds();
         mBall.checkGround(deltaTime);

@@ -13,6 +13,8 @@ public class Slime {
     private static final int TARGET_WIDTH = 1280;
     private static final int TARGET_HEIGHT = 720;
 
+    public static final int HORIZONTAL_VELOCITY = 800;
+
     public float gravity;
     public float x;
     public float y;
