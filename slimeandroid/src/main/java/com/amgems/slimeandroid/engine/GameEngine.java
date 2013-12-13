@@ -6,18 +6,32 @@ import android.util.Log;
  * Created by zac on 12/12/13.
  */
 public class GameEngine implements Runnable {
+    private static final long INIT_TIME = 0;
 
     private Thread mThread;
+    private Renderer mRenderer;
+    private long mLastCallTime;
+
     private volatile boolean mIsRunning;
 
-    public GameEngine() {
-
+    public GameEngine(Renderer renderer) {
+        mRenderer = renderer;
+        mLastCallTime = INIT_TIME;
     }
 
     @Override
     public void run() {
         while (mIsRunning) {
+            if (mRenderer.isSurfaceReady()) {
+                if (mLastCallTime == INIT_TIME) {
+                    mLastCallTime = System.nanoTime();
+                }
+                long currentTime = System.nanoTime();
+                long deltaTime = mLastCallTime - currentTime;
+                mLastCallTime = currentTime;
+                mRenderer.draw(deltaTime);
 
+            }
         }
 
     }

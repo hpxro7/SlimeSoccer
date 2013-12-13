@@ -7,15 +7,20 @@ import android.os.Bundle;
 import android.view.*;
 import android.os.Build;
 import com.amgems.slimeandroid.engine.GameEngine;
+import com.amgems.slimeandroid.engine.GameSurfaceView;
+import com.amgems.slimeandroid.engine.Renderer;
 
 public class Bootstrapper extends Activity {
 
     private GameEngine mEngine;
+    private GameSurfaceView mGameSurfaceView;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        mEngine = new GameEngine();
+        mGameSurfaceView = new GameSurfaceView(this);
+        mEngine = new GameEngine(mGameSurfaceView);
+        setContentView(mGameSurfaceView);
     }
 
     @Override
@@ -29,4 +34,5 @@ public class Bootstrapper extends Activity {
         super.onPause();
         mEngine.pause();
     }
+
 }
