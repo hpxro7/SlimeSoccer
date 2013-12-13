@@ -24,12 +24,12 @@ public class GameEngine implements Runnable {
         while (mIsRunning) {
             if (mRenderer.isSurfaceReady()) {
                 if (mLastCallTime == INIT_TIME) {
-                    mLastCallTime = System.nanoTime();
+                    mLastCallTime = System.currentTimeMillis();
                 }
-                long currentTime = System.nanoTime();
-                long deltaTime = mLastCallTime - currentTime;
+                long currentTime = System.currentTimeMillis();
+                long deltaTime = currentTime - mLastCallTime;
                 mLastCallTime = currentTime;
-                mRenderer.draw(deltaTime);
+                mRenderer.draw((float) deltaTime / 1000);
 
             }
         }
