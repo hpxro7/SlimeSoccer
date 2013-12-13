@@ -28,6 +28,10 @@ public class GameSurfaceView extends SurfaceView implements Renderer {
         super(context);
         mHolder = getHolder();
         mHolder.setFixedSize(TARGET_WIDTH, TARGET_HEIGHT);
+        init();
+    }
+
+    public void init() {
         mBackgroundBitmap = Bitmap.createBitmap(TARGET_WIDTH, TARGET_HEIGHT, Bitmap.Config.ARGB_8888);
         Canvas canvas = new Canvas(mBackgroundBitmap);
         Paint p = new Paint(Paint.ANTI_ALIAS_FLAG);
