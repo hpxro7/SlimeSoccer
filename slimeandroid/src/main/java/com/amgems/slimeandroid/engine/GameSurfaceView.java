@@ -45,7 +45,7 @@ public class GameSurfaceView extends SurfaceView implements Renderer {
         p.setColor(Color.GRAY);
         canvas.drawRect(0f, 0.9f * TARGET_HEIGHT, TARGET_WIDTH, TARGET_HEIGHT, p);
         mPlayer = new Slime(0.5f * TARGET_WIDTH, 0.9f * TARGET_HEIGHT - BALL_SIZE , SLIME_SIZE, GRAVITY, Color.RED);
-        mBall = new Ball(0.45f * TARGET_WIDTH, 0.3f * TARGET_HEIGHT, BALL_SIZE, GRAVITY, Color.YELLOW);
+        mBall = new Ball(0.8f * TARGET_WIDTH, 0.3f * TARGET_HEIGHT, BALL_SIZE, GRAVITY, Color.YELLOW);
     }
 
     public void registerInputHandler(GameInputHandler gameInputHandler) {
