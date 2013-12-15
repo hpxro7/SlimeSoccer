@@ -39,7 +39,6 @@ public class Ball {
             y = 2 * (0.9f * TARGET_HEIGHT - size / 2) - y;
             dy *= -0.8;
             dx *= 0.8;
-            Log.d("Bounce", "y = " + y);
             return true;
         }
         return false;
@@ -63,6 +62,7 @@ public class Ball {
     public boolean checkCollision(Slime slime) {
         float diff = Math.abs(slime.x - x) * Math.abs(slime.x - x) + Math.abs(slime.y - y) * Math.abs(slime.y - y);
         if ( diff < (slime.size / 2 + size / 2) * (slime.size / 2 + size / 2) && slime.y > y) {
+            double dist = Math.sqrt(diff);
             double slimeAngle;
             if (slime.dx == 0) {
                 if (slime.dy > 0) slimeAngle = Math.PI / 2;
@@ -85,19 +85,29 @@ public class Ball {
             }
             double slimeSpeed = Math.sqrt(slime.dy * slime.dy + slime.dx * slime.dx);
             double ballSpeed = Math.sqrt(dy * dy + dx * dx);
-            double contactAngle = Math.atan((slime.y - y) / (slime.x - x));
-            double collisionX = slime.x + (x - slime.x) * (slime.size / 2 + size / 2) / Math.sqrt(diff);
-            double collisionY = slime.y + (y - slime.y) * (slime.size / 2 + size / 2) / Math.sqrt(diff);
-            //Log.d("Slime", "SLIME X: " + slime.x + " Y: " + slime.y);
+            double instanceAngle = Math.acos((dx * (x - slime.x) + dy * (y - slime.y)) / dist / ballSpeed);
+            Log.d("Slime", "SLIME X: " + slime.x + " Y: " + slime.y);
+            Log.d("Initial", "Instance X: " + x + " Y: " + y);
+            Log.d("before", "SPEED dx: " + dx + " dy: " + dy);
+            Log.d("angle", "instanceAngle: " + instanceAngle);
+            double ratio = Math.sin(instanceAngle) / (slime.size / 2 + size / 2);
+            double instanceCollisionAngle = Math.asin(ratio * dist);
+            Log.d("Angle", "collisionAngle: " + instanceCollisionAngle);
+            double instanceCollisionDiff = Math.sin(Math.PI - instanceCollisionAngle - instanceAngle) / ratio;
+            Log.d("ratio", "ratio: " + ratio + " collisionDiff: " + instanceCollisionDiff);
+            double penetrationTime = instanceCollisionDiff / ballSpeed;
+            Log.d("Penetration", "Penetration: " + penetrationTime);
+            double collisionX = x - penetrationTime * dx;
+            double collisionY = y - penetrationTime * dy;
+            Log.d("Collision", "Collision X: " + collisionX + " Y: " + collisionY);
+            double contactAngle = Math.atan((slime.y - collisionY) / (slime.x - collisionX));
             //Log.d("Difference", "Diff: " + Math.sqrt(diff));
-            //Log.d("Initial", "Initial X: " + x + " Y: " + y);
-            //Log.d("Collision", "Collision X: " + collisionX + " Y: " + collisionY);
-            double penetrationTime = (y - collisionY) / dy;
-            //Log.d("Penetration", "Penetration: " + penetrationTime);
+            Log.d("before", "BEFORE SPEED - dx: " + dx + " dy: " + dy);
             dx = (float) ((2 * slimeSpeed * Math.cos(slimeAngle - contactAngle) - ballSpeed * Math.cos(ballAngle - contactAngle)) * Math.cos(contactAngle) +
                     ballSpeed * Math.sin(ballAngle - contactAngle) * Math.cos(contactAngle + Math.PI / 2)) * 0.9f;
             dy = (float) ((2 * slimeSpeed * Math.cos(slimeAngle - contactAngle) - ballSpeed * Math.cos(ballAngle - contactAngle)) * Math.sin(contactAngle) +
                     ballSpeed * Math.sin(ballAngle - contactAngle) * Math.sin(contactAngle + Math.PI / 2)) * 0.9f;
+            Log.d("before", "BEFORE SPEED - dx: " + dx + " dy: " + dy);
             x = (float) (collisionX + penetrationTime * dx);
             y = (float) (collisionY + penetrationTime * dy);
             //Log.d("Bounce", "X: " + x + " Y: " + y);
