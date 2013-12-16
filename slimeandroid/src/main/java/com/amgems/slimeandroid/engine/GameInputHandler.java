@@ -1,5 +1,9 @@
 package com.amgems.slimeandroid.engine;
 
+import android.hardware.Sensor;
+import android.hardware.SensorEvent;
+import android.hardware.SensorEventListener;
+import android.hardware.SensorManager;
 import android.util.Log;
 import android.view.MotionEvent;
 import android.view.View;
@@ -13,17 +17,29 @@ import java.util.concurrent.TimeUnit;
 /**
  * Created by shermpay on 12/12/13.
  */
-public class GameInputHandler implements View.OnTouchListener{
+public class GameInputHandler implements View.OnTouchListener, SensorEventListener{
+
+    private static GameInputHandler sInstance;
+
     public Queue<InputEvent> eventQueue;
     private ScheduledExecutorService mExecutor;
 
-    protected GameInputHandler() {
+    private SensorManager mSensorManager;
+    private Sensor mAccelerometerSensor;
+
+    protected GameInputHandler(SensorManager sensorManager) {
         eventQueue = new LinkedList<InputEvent>();
+        mSensorManager = sensorManager;
+
+        mAccelerometerSensor = mSensorManager.getDefaultSensor(Sensor.TYPE_ACCELEROMETER);
     }
 
-    public static GameInputHandler getInstance(View view) {
-        view.setOnTouchListener(InstanceHolder.INSTANCE);
-        return InstanceHolder.INSTANCE;
+    public static synchronized GameInputHandler getInstance(View view, SensorManager sensorManager) {
+        if (sInstance == null) {
+            sInstance = new GameInputHandler(sensorManager);
+            view.setOnTouchListener(sInstance);
+        }
+        return sInstance;
     }
 
     @Override
@@ -35,7 +51,7 @@ public class GameInputHandler implements View.OnTouchListener{
                     return true;
                 case MotionEvent.ACTION_UP:
                     endLongHold();
-                    eventQueue.add(new StopEvent(event.getX(), event.getY()));
+                    eventQueue.add(new InputEvent(event.getX(), event.getY(), InputEvent.InputType.STOP));
                     return true;
                 default:
                     return false;
@@ -43,9 +59,21 @@ public class GameInputHandler implements View.OnTouchListener{
         }
     }
 
+    @Override
+    public void onAccuracyChanged(Sensor sensor, int accuracy) {
+
+    }
+
+    @Override
+    public void onSensorChanged(SensorEvent event) {
+        synchronized (eventQueue) {
+            eventQueue.add(new InputEvent(event.values[0], event.values[1], InputEvent.InputType.JUMP));
+        }
+    }
+
     public void beginLongHold(MotionEvent event) {
         mExecutor = Executors.newSingleThreadScheduledExecutor();
-        AddLongHoldTask task = new AddLongHoldTask(new MoveEvent(event.getX(), event.getY()));
+        AddLongHoldTask task = new AddLongHoldTask(new InputEvent(event.getX(), event.getY(), InputEvent.InputType.MOVE));
         mExecutor.scheduleWithFixedDelay(task, 0l, 100l, TimeUnit.MILLISECONDS);
     }
 
@@ -53,25 +81,18 @@ public class GameInputHandler implements View.OnTouchListener{
         mExecutor.shutdownNow();
     }
 
-    private static class InstanceHolder {
-        final static GameInputHandler INSTANCE = new GameInputHandler();
+    public void resume() {
+        mSensorManager.registerListener(this, mAccelerometerSensor, SensorManager.SENSOR_DELAY_GAME);
     }
 
-    public static class TouchEvent {
-        float x;
-        float y;
-
-        public TouchEvent(float x, float y) {
-            this.x = x;
-            this.y = y;
-        }
-
+    public void pause() {
+        mSensorManager.unregisterListener(this, mAccelerometerSensor);
     }
 
     private class AddLongHoldTask implements Runnable {
-        private MoveEvent moveEvent;
+        private InputEvent moveEvent;
 
-        public AddLongHoldTask(MoveEvent touchEvent) {
+        public AddLongHoldTask(InputEvent touchEvent) {
             this.moveEvent = touchEvent;
         }
 
@@ -83,29 +104,4 @@ public class GameInputHandler implements View.OnTouchListener{
 
     }
 
-    private class MoveEvent extends InputEvent {
-
-        public MoveEvent(float x, float y) {
-            super(x, y);
-        }
-
-        @Override
-        public InputType getType() {
-            return InputType.MOVE;
-        }
-
-    }
-
-    public class StopEvent extends InputEvent {
-
-        public StopEvent(float x, float y) {
-            super(x, y);
-        }
-
-        @Override
-        public InputType getType() {
-            return InputType.STOP;
-        }
-
-    }
 }

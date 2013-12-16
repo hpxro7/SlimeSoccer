@@ -5,6 +5,7 @@ import android.graphics.Bitmap;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.Paint;
+import android.util.Log;
 import android.view.SurfaceHolder;
 import android.view.SurfaceView;
 
@@ -81,6 +82,9 @@ public class GameSurfaceView extends SurfaceView implements Renderer {
                     case STOP: {
                         mPlayer.dx = 0f;
                         break;
+                    }
+                    case JUMP: {
+                        Log.d(GameSurfaceView.class.getSimpleName(), "x: " + event.x + ", y: " + event.y);
                     }
                     default:
                         break;

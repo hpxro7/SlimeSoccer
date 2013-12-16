@@ -3,6 +3,7 @@ package com.amgems.slimeandroid;
 import android.app.Activity;
 import android.app.ActionBar;
 import android.app.Fragment;
+import android.hardware.SensorManager;
 import android.os.Bundle;
 import android.view.*;
 import android.os.Build;
@@ -17,6 +18,7 @@ public class Bootstrapper extends Activity {
 
     private GameEngine mEngine;
     private GameSurfaceView mGameSurfaceView;
+    private GameInputHandler mGameInputHandler;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -25,8 +27,8 @@ public class Bootstrapper extends Activity {
                              WindowManager.LayoutParams.FLAG_FULLSCREEN);
         super.onCreate(savedInstanceState);
         mGameSurfaceView = new GameSurfaceView(this);
-        GameInputHandler gameInputHandler = GameInputHandler.getInstance(mGameSurfaceView);
-        mGameSurfaceView.registerInputHandler(gameInputHandler);
+        mGameInputHandler = GameInputHandler.getInstance(mGameSurfaceView, (SensorManager) getSystemService(SENSOR_SERVICE));
+        mGameSurfaceView.registerInputHandler(mGameInputHandler);
         mEngine = new GameEngine(mGameSurfaceView);
         setContentView(mGameSurfaceView);
     }
@@ -35,12 +37,14 @@ public class Bootstrapper extends Activity {
     protected void onResume() {
         super.onResume();
         mEngine.resume();
+        mGameInputHandler.resume();
     }
 
     @Override
     protected void onPause() {
         super.onPause();
         mEngine.pause();
+        mGameInputHandler.pause();
     }
 
 }
