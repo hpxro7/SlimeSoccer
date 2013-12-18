@@ -84,7 +84,8 @@ public class GameSurfaceView extends SurfaceView implements Renderer {
                         break;
                     }
                     case JUMP: {
-                        Log.d(GameSurfaceView.class.getSimpleName(), "x: " + event.x + ", y: " + event.y);
+                        mPlayer.dy = -600f;
+                        break;
                     }
                     default:
                         break;

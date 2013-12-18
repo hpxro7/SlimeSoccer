@@ -121,7 +121,6 @@ public class Ball {
         x += dx * deltaTime;
         y += dy * deltaTime;
         int count = 0;
-        Log.d("none", "  ");
         while (count++ < 10 && checkCollision(slime) ||  checkBounds() || checkGround()) { }
         dy += gravity * deltaTime;
     }

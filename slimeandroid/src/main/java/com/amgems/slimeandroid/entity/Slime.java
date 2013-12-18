@@ -41,7 +41,7 @@ public class Slime {
     }
 
     public void checkGround(float deltaTime) {
-        if (y >= 0.9f * TARGET_HEIGHT) {
+        if (y > 0.9f * TARGET_HEIGHT) {
             y = 0.9f * TARGET_HEIGHT;
             dy = 0;
         } else {
