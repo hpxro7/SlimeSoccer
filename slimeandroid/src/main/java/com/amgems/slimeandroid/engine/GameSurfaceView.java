@@ -72,7 +72,7 @@ public class GameSurfaceView extends SurfaceView implements Renderer {
 
                 switch (event.getType()) {
                     case MOVE: {
-                        if (getScaledX(event.x) >= mPlayer.x) {
+                        if (getScaledX(event.x) >= TARGET_WIDTH / 2) {
                             mPlayer.dx = Slime.HORIZONTAL_VELOCITY;
                         } else {
                             mPlayer.dx = -Slime.HORIZONTAL_VELOCITY;

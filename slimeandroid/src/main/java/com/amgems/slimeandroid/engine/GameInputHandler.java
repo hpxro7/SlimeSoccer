@@ -22,12 +22,9 @@ public class GameInputHandler implements View.OnTouchListener, SensorEventListen
     private static GameInputHandler sInstance;
 
     public Queue<InputEvent> eventQueue;
-    private ScheduledExecutorService mExecutor;
 
     private SensorManager mSensorManager;
     private Sensor mAccelerometerSensor;
-
-    private static final long LONG_HOLD_DELAY = 125l;
 
     float[] mGravity;
     float[] mLinearAcceleration;
@@ -61,10 +58,9 @@ public class GameInputHandler implements View.OnTouchListener, SensorEventListen
         synchronized (eventQueue) {
             switch (event.getActionMasked()) {
                 case MotionEvent.ACTION_DOWN:
-                    beginLongHold(event);
+                    eventQueue.add(new InputEvent(event.getX(), event.getY(), InputEvent.InputType.MOVE));
                     return true;
                 case MotionEvent.ACTION_UP:
-                    endLongHold();
                     eventQueue.add(new InputEvent(event.getX(), event.getY(), InputEvent.InputType.STOP));
                     return true;
                 default:
@@ -83,8 +79,6 @@ public class GameInputHandler implements View.OnTouchListener, SensorEventListen
             Log.d(GameSurfaceView.class.getSimpleName(), "Acceleration: " + mLinearAcceleration[X] + ", threshold: " + JUMP_THRESHOLD);
         }
         if (mLinearAcceleration[X] > JUMP_THRESHOLD) {
-            //Log.d(GameSurfaceView.class.getSimpleName(), "x: " + (mLinearAcceleration[X]) + ", y: " + (mLinearAcceleration[Y]) +
-            //      ", z: " + (mLinearAcceleration[Z]));
             synchronized (eventQueue) {
                 eventQueue.add(new InputEvent(mLinearAcceleration[X], mLinearAcceleration[Z], InputEvent.InputType.JUMP));
             }
@@ -101,37 +95,12 @@ public class GameInputHandler implements View.OnTouchListener, SensorEventListen
         linearAcceleration[Z] = accelerationValues[Z] - mGravity[Z];
     }
 
-    public void beginLongHold(MotionEvent event) {
-        mExecutor = Executors.newSingleThreadScheduledExecutor();
-        AddLongHoldTask task = new AddLongHoldTask(new InputEvent(event.getX(), event.getY(), InputEvent.InputType.MOVE));
-        mExecutor.scheduleWithFixedDelay(task, 0, LONG_HOLD_DELAY, TimeUnit.MILLISECONDS);
-    }
-
-    public void endLongHold() {
-        mExecutor.shutdownNow();
-    }
-
     public void resume() {
         mSensorManager.registerListener(this, mAccelerometerSensor, SensorManager.SENSOR_DELAY_UI);
     }
 
     public void pause() {
         mSensorManager.unregisterListener(this, mAccelerometerSensor);
-    }
-
-    private class AddLongHoldTask implements Runnable {
-        private InputEvent moveEvent;
-
-        public AddLongHoldTask(InputEvent touchEvent) {
-            this.moveEvent = touchEvent;
-        }
-
-        @Override
-        public void run() {
-            Log.v(GameInputHandler.class.getSimpleName(), "Added to the queue!");
-            eventQueue.add(moveEvent);
-        }
-
     }
 
 }
